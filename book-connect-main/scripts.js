@@ -19,41 +19,27 @@ const html = {
         moreButton: document.querySelector('[data-list-button]'),
     },
     preview: {
+        summarySubTitle: document.querySelector('[data-list-subtitle]'),
+        summaryDescription: document.querySelector('[data-list-description]'),
         summaryList: document.querySelectorAll('[data-preview]'),
         summaryOverlay: document.querySelector('[data-list-active]'),
         summaryBlur: document.querySelector('[data-list-blur]'),
         summaryImage: document.querySelector('[data-list-image]'),
         summaryTitle: document.querySelector('[data-list-title]'),
-        summarySubTitle: document.querySelector('[data-list-subtitle]'),
-        summaryDescription: document.querySelector('[data-list-description]'),
         summaryClose: document.querySelector('[data-list-close]'),
-    },
-    display: {
-        settingsOverlay: document.querySelector('[data-settings-overlay]'),
-        settingButton: document.querySelector('[data-header-settings]'),
-        settingsTheme: document.querySelector('[data-settings-theme]'),
-        settingsCancel: document.querySelector('[data-settings-cancel]'),
-        settingsSubmit: document.querySelector('[data-settings-form]'),
     },
 };
 
-/**
- * Creates an html fragment given an object.
- * An input book object is selected and the author, id, title and image are extracted
- * via destructuring.
- * A template literate is used to create an html preview of the book.
- * 
- * @param {array} props is an object array with book properties.
- * @returns {HTMLElement} 
- **/
-const createPreview = (props) => {
-    const { author, image, title, id } = props;
+
+const createPreview = (book_props) => {
+    const { author, image, title, id } = book_props;       // extracted with using destruction 
 
     const newElement = document.createElement('button');
     newElement.className = 'preview';
     newElement.setAttribute('data-preview', id);
-
-    newElement.innerHTML =  /* HTML */`
+    
+    // HTML preview of book
+    newElement.innerHTML =  /* HTML */`      
         <img
                 class="preview__image"
                 src="${image}"
@@ -68,21 +54,15 @@ const createPreview = (props) => {
     return newElement;
 };
 
-/**
- * Creates a slice of specified length from the database of books.
- * This slice is then converted into a preview for each book using the createPreview
- * function.
- * The previe is appended to an htlm fragment and this fragment is returned.
- * 
- * @param {array} array is an object array of books with properties.
- * @param {number} start is a number denoting where to start slice.
- * @param {number} end is a number denoting where to end slice.
- * @return {HTMLElement} 
- * 
- */
-const createPreviewsFragment = (array, start, end) => {
 
-    const booksSlice = array.slice(start, end);
+
+
+const createPreviewsFragment = (array, start, end) => {
+    // 'array' is an object array of books with properties.
+   // 'start' is a number denoting where to start slice.
+  // 'end' is a number denoting where to end slice.
+
+    const booksSlice = array.slice(start, end);   // create slice from book data base
 
     let previewFragment = document.createDocumentFragment();
 
@@ -97,32 +77,19 @@ const createPreviewsFragment = (array, start, end) => {
             image,
             title,
         };
-        previewFragment.appendChild(createPreview(preview));
+        previewFragment.appendChild(createPreview(preview)); // preview appended to html fragment
     };
-    return previewFragment;
+    return previewFragment;  // return html fragment
 };
 
-/**
- * Determines the number of pages to travese on the app based on the total
- * number of books available in the database.
- * 
- * @param {array} array with total number of books.
- * @param {number} page current page.
- * @returns {number}
- */
 const updateRemaining = (array, page) => {
+    // array has total number of books.
+    // 'page' is the current page
     let remaining = array.length - (page * BOOKS_PER_PAGE);
     return remaining;
 };
 
-/**
- * Event function to show summary overlay after clicking preview button.
- * Add overlay information from the books object using template literals.
- * 
- * @param void
- * @returns no return.
- */
-const showPreview = () => {
+const preview = () => {
     /**
      * Node list of all preview buttons.
      * @type {NodeList}
@@ -174,29 +141,7 @@ const showPreview = () => {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* -----------------------------------------------PAGE LOAD------------------------------------------*/
+// ONCE PAGE IS LOADED: 
 
 /**
  * Selects and displays the first 36 books from the books array.
@@ -204,11 +149,7 @@ const showPreview = () => {
  * Checks if books exists as the books array.
  */
 
-/**
- * Array of range start and end. This range is the range of books to select from the books array on page load.
- * @type {Array}
- */
-const range = [0, 36];
+const range = [0, 36]; // Array of range start and end. This range is the range of books to select from the books array on page load.
 
 /**
  * Stores current page number.
@@ -239,79 +180,13 @@ window.scrollTo({ top: 0, behavior: 'smooth' }); ///scroll to top on reload.
 
 
 
-/* -------------------------------DISPLAY SETTINGS--------------------------- */ /* COMPLETED */
+// FOR SCROLLING OF PAGE
 
 /**
- * The following sets display settings using the display settings button & overlay.
- * On page load, user system settings are checked and applied to webpage.
- * Creates an event to check if the display settings button is clicked. If clicked,
- * the display settings overlay is opened.
- * User settings are stored and applied to the css using the setProperty() method.
- * If the cancel button is closed, the overlay is closed and the form reset. 
+ * Function for book scrolling. If show more button is clicked then the function runs and the next 36 books 
+ * are shown. Updates the show more button to show the remaining books that have not been viewed.
  */
 
-
-// Check darkmode/lightmode settings of user's system and assign them to the websites settings.
-html.display.settingsTheme.value = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'night' : 'day';
-
-/**
- * Saves color values for day and night settings.
- * @type {object} css
- */
-const css = {
-    day : ['255, 255, 255', '10, 10, 20'],
-    night: ['10, 10, 20','255, 255, 255']
-};
-
-html.display.settingButton.addEventListener('click', () => {
-    html.display.settingsOverlay.showModal();
-});
-
-html.display.settingsCancel.addEventListener('click', () => {
-    html.display.settingsOverlay.close();
-    html.display.settingsSubmit.reset();
-});
-
-html.display.settingsSubmit.addEventListener('submit', (event) => {
-    event.preventDefault();
-    /**
-     * Collects settings form selection.
-     * @type {object}
-     */
-    const formData = new FormData(event.target);
-    
-    /**
-     * Stores entries from formData.
-     * @type {object}
-     */
-    const selected = Object.fromEntries(formData);
-
-    if (selected.theme === 'night') {
-        document.documentElement.style.setProperty('--color-light', css[selected.theme][0]);
-        document.documentElement.style.setProperty('--color-dark', css[selected.theme][1]);        
-    } else if (selected.theme === 'day') {
-        document.documentElement.style.setProperty('--color-light', css[selected.theme][0]);
-        document.documentElement.style.setProperty('--color-dark', css[selected.theme][1]);
-    };
-
-    html.display.settingsOverlay.close();
-});
-
-
-/* -----------------------------PAGE SCROLL--------------------------------- */  /* COMPLETED */
-
-/**
- * The following allows scrolling down the list of books using a button to show more.
- * On page load, 36 pages are shown. 
- * Listens for an event on the show more button. If the event is fired, selects the next 36 books from
- * the books array and appends them as html fragments.
- * Updates the show more button to show the remaining books that have not been viewed.
- */
-
-/**
- * Number of books remaining calculated using the page number.
- * @type {number}
- */
 let pagesRemaining = books.length - (page * BOOKS_PER_PAGE);
 
 html.scroll.moreButton.innerHTML = /* html */ `
@@ -334,13 +209,8 @@ if (pagesRemaining <= 0) {
     }
 });
 
-
-/* -------------------------------------PREVIEW OVERLAY--------------------------------*/ /* COMPLETED */
-
-/**
- * Opens books summary overlay.
- */
-showPreview();
+// calling show preview function 
+preview();
 
 
 
