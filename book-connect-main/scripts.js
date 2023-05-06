@@ -178,7 +178,7 @@ listClose.addEventListener('click', () => {
  * appended to a searchGenres element and searchAuthors element.
  */
 
-//When dataHeaderSearch is clicked, it shows a modal by invoking showModal() on dataSearchOverlay
+//When searcButton is clicked, it shows a modal by invoking showModal() on dataSearchOverlay
 searchButton.addEventListener('click', () => {
     searchOverlay.showModal()
     searchTitle.focus()
