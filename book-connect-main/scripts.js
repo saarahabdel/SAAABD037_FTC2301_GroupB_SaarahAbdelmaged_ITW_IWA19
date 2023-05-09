@@ -52,7 +52,7 @@ if (!range && range.length === 2) {
 
 /**
  * The createPreview() function takes a book preview object and returns 
- * a button element containing the book preview information in HTML form
+ * a button element (showPreview) containing the book preview information in HTML form
  */
 function createPreview(preview) {
     const { author: authorId, id, image, title } = preview
@@ -135,7 +135,7 @@ moreButton.innerHTML = /* HTML */
 
 // BOOK SUMMARIES
 
-// When listItems is clicked, it shows a modal by invoking showModal() on dataListActive.
+// When listItems is clicked, it shows a modal by invoking showModal() on listActive.
 listItems.addEventListener('click', (event) => {
     listActive.showModal()
     let pathArray = Array.from(event.path || event.composedPath())
@@ -162,23 +162,16 @@ listItems.addEventListener('click', (event) => {
 })
 
 
-//When listClose is clicked, it closes the modal by invoking close() on dataListActive.
+//When listClose is clicked, it closes the modal by invoking close() on listActive.
 listClose.addEventListener('click', () => {
     listActive.close()
 })
 
 
-/**
- * GENRES AND AUTHORS
- * This code creates a document fragment for each 'genres' and 'authors'.
- * It sets the value of the option to "any" and the inner text to "All Genres" and "All Authors" 
- * respectively. It then loops through an object and creates an option element for each entry, 
- * setting the value to the entry's key and the inner text to its value. 
- * These option elements are added to the fragment, and the fragment is then 
- * appended to a searchGenres element and searchAuthors element.
- */
 
-//When searcButton is clicked, it shows a modal by invoking showModal() on dataSearchOverlay
+// GENRES AND AUTHORS
+
+//When searcButton is clicked, it shows a modal by invoking showModal() on searchOverlay
 searchButton.addEventListener('click', () => {
     searchOverlay.showModal()
     searchTitle.focus()
@@ -188,35 +181,40 @@ searchButton.addEventListener('click', () => {
 searchCancel.addEventListener('click', () => { 
     searchOverlay.close()
 })
-
+// This code creates a document fragment for 'genres'
 const genresFragment = document.createDocumentFragment()
 const genreElement = document.createElement('option')
-genreElement.value = 'any'
-genreElement.innerText = 'All Genres'
+genreElement.value = 'any' // sets the value of the option to "any"
+genreElement.innerText = 'All Genres' // sets innerText to 'All Genres'
 genresFragment.appendChild(genreElement)
 
+// loops through an object and creates an option element for each entry, 
+// setting the value to the entry's key and the inner text to its value.
 for (const [id] of Object.entries(genres)) {
     const genreElement = document.createElement('option')
     genreElement.value = id
     genreElement.innerText = genres[id]
     genresFragment.appendChild(genreElement)
 }
-
+// option elements are added to the fragment, and the fragment is then appended to the searchGenres element.
 searchGenres.appendChild(genresFragment)
 
+// This code creates a document fragment for 'authors'.
 const authorsFragment = document.createDocumentFragment()
 const authorsElement = document.createElement('option')
-authorsElement.value = 'any'
-authorsElement.innerText = 'All Authors'
+authorsElement.value = 'any' // sets the value of the option to "any"
+authorsElement.innerText = 'All Authors'// sets innerText to 'All Authors'
 authorsFragment.appendChild(authorsElement)
 
+// loops through an object and creates an option element for each entry, 
+// setting the value to the entry's key and the inner text to its value.
 for (const [id] of Object.entries(authors)) {
     const authorsElement = document.createElement('option')
     authorsElement.value = id
     authorsElement.innerText = authors[id]
     authorsFragment.appendChild(authorsElement)
 }
-
+// option elements are added to the fragment, and the fragment is then appended to the searchAuthors element.
 searchAuthors.appendChild(authorsFragment)
 
 
