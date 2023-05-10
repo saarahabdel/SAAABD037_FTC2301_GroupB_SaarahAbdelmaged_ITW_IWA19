@@ -52,7 +52,13 @@ if (!range && range.length === 2) {
 
 /**
  * The createPreview() function takes a book preview object and returns 
- * a button element containing the book preview information in HTML form
+ * a button element (showPreview) containing the book preview information in HTML form
+ *
+ * the authorId, id, title and image are extracted via destructuring.
+ *
+ * A template literate is used to create an html preview of the book.
+ *
+ * @param {array} preview is an object array with book properties.
  */
 function createPreview(preview) {
     const { author: authorId, id, image, title } = preview
@@ -133,7 +139,50 @@ moreButton.innerHTML = /* HTML */
 
 
 
-// GENRES AND AUTHORS DROPDOWN
+// BOOK SUMMARIES
+
+// When listItems is clicked, it shows a modal by invoking showModal() on dataListActive.
+listItems.addEventListener('click', (event) => {
+    listActive.showModal()
+    let pathArray = Array.from(event.path || event.composedPath())
+    let active;
+  
+    for (const node of pathArray) {
+      if (active) break;
+      const id = node?.dataset?.preview
+      
+      for (const singleBook of books) {
+        if (singleBook.id === id) {
+          active = singleBook
+          break;
+        }
+      }
+    }
+  
+    if (!active) return;
+    listImage.src = active.image;
+    listBlur.src = active.image;
+    listTitle.textContent = active.title; 
+    listSubtitle.textContent = `${authors[active.author]} (${new Date(active.published).getFullYear()})`
+    listDescription.textContent = active.description;
+})
+
+
+//When listClose is clicked, it closes the modal by invoking close() on dataListActive.
+listClose.addEventListener('click', () => {
+    listActive.close()
+})
+
+
+/**
+ * GENRES AND AUTHORS
+ * This code creates a document fragment for each 'genres' and 'authors'.
+ * It sets the value of the option to "any" and the inner text to "All Genres" and "All Authors" 
+ * respectively. It then loops through an object and creates an option element for each entry, 
+ * setting the value to the entry's key and the inner text to its value. 
+ * These option elements are added to the fragment, and the fragment is then 
+ * appended to a searchGenres element and searchAuthors element.
+ */
 
 //When searcButton is clicked, it shows a modal by invoking showModal() on dataSearchOverlay
 searchButton.addEventListener('click', () => {
@@ -146,14 +195,12 @@ searchCancel.addEventListener('click', () => {
     searchOverlay.close()
 })
 
-// a document fragment for 'genres'
 const genresFragment = document.createDocumentFragment()
 const genreElement = document.createElement('option')
-genreElement.value = 'any'                             // sets the value of the option to "any"
-genreElement.innerText = 'All Genres'                  // sets inner text to "All Genres"
+genreElement.value = 'any'
+genreElement.innerText = 'All Genres'
 genresFragment.appendChild(genreElement)
 
-// loops through an object and creates an option element for each entry, setting the value to the entry's key and the inner text to its value
 for (const [id] of Object.entries(genres)) {
     const genreElement = document.createElement('option')
     genreElement.value = id
@@ -162,17 +209,14 @@ for (const [id] of Object.entries(genres)) {
     genresFragment.appendChild(genreElement)
 }
 
-// fragment is then appended to a searchGenres element
 searchGenres.appendChild(genresFragment)
 
-// a document fragment for 'authors'
 const authorsFragment = document.createDocumentFragment()
 const authorsElement = document.createElement('option')
-authorsElement.value = 'any'                             // sets the value of the option to "any"
-authorsElement.innerText = 'All Authors'                 // sets inner text to "All Authors"
+authorsElement.value = 'any'
+authorsElement.innerText = 'All Authors'
 authorsFragment.appendChild(authorsElement)
 
-// loops through an object and creates an option element for each entry, setting the value to the entry's key and the inner text to its value
 for (const [id] of Object.entries(authors)) {
     const authorsElement = document.createElement('option')
     authorsElement.value = id
@@ -181,7 +225,6 @@ for (const [id] of Object.entries(authors)) {
     authorsFragment.appendChild(authorsElement)
 }
 
-// fragment is then appended to a searchAuthors element
 searchAuthors.appendChild(authorsFragment)
 
   
