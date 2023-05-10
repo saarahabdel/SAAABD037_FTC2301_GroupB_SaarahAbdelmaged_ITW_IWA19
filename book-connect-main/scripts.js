@@ -88,7 +88,7 @@ const endIndex = startIndex + BOOKS_PER_PAGE
 
 const bookExtracted = books.slice(startIndex, endIndex)
 
-
+// loop iterates over the book previews to display on current page 
 for (const preview of bookExtracted) {
     
     // creates a book preview button using the createPreview function
