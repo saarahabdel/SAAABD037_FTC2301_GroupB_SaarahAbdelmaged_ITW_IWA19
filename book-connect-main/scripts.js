@@ -53,6 +53,12 @@ if (!range && range.length === 2) {
 /**
  * The createPreview() function takes a book preview object and returns 
  * a button element (showPreview) containing the book preview information in HTML form
+ *
+ * the authorId, id, title and image are extracted via destructuring.
+ *
+ * A template literate is used to create an html preview of the book.
+ *
+ * @param {array} preview is an object array with book properties.
  */
 function createPreview(preview) {
     const { author: authorId, id, image, title } = preview
